@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Be My Valentine 💗</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Comic Sans MS', 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(180deg, #ffd6e8, #ffeef6);
+      overflow: hidden;
+    }
+
+    .card {
+      background: #ffffff;
+      width: 94%;
+      max-width: 360px;
+      border-radius: 28px;
+      padding: 22px 18px 26px;
+      text-align: center;
+      box-shadow: 0 18px 36px rgba(255,105,180,0.25);
+      position: relative;
+      animation: bounceIn 0.9s ease;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.6) translateY(40px); opacity: 0; }
+      60% { transform: scale(1.05) translateY(-6px); }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .character-wrap {
+      position: relative;
+      margin-bottom: 6px;
+    }
+
+    .character {
+      font-size: 3.6rem;
+      animation: wiggle 1.6s infinite;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .heart-hold {
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff5fa2;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      box-shadow: 0 6px 14px rgba(255,95,162,0.35);
+    }
+
+    @keyframes wiggle {
+      0% { transform: rotate(0deg) translateY(0); }
+      25% { transform: rotate(6deg) translateY(-2px); }
+      50% { transform: rotate(0deg) translateY(0); }
+      75% { transform: rotate(-6deg) translateY(-2px); }
+      100% { transform: rotate(0deg) translateY(0); }
+    }
+
+    .bubble {
+      background: #fff0f6;
+      color: #ff4f9a;
+      padding: 8px 12px;
+      border-radius: 14px;
+      font-size: 0.85rem;
+      display: inline-block;
+      margin-bottom: 6px;
+      animation: popText 0.5s ease;
+    }
+
+    h1 {
+      margin: 10px 0 8px;
+      color: #ff4f9a;
+      font-size: 1.6rem;
+    }
+
+    p {
+      color: #666;
+      line-height: 1.45;
+      margin-bottom: 18px;
+      font-size: 0.95rem;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      padding: 14px 20px;
+      border-radius: 999px;
+      font-size: 1.05rem;
+      cursor: pointer;
+      min-width: 120px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button:active { transform: scale(0.95); }
+
+    .yes {
+      background: linear-gradient(135deg, #ff5fa2, #ff8dc7);
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(255,95,162,0.4);
+      animation: pulse 1.6s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .no {
+      background: #f4f4f4;
+      color: #777;
+    }
+
+    .message {
+      margin-top: 16px;
+      font-size: 1.15rem;
+      color: #ff4f9a;
+      display: none;
+      animation: popText 0.6s ease;
+    }
+
+    @keyframes popText {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .heart {
+      position: fixed;
+      bottom: -24px;
+      font-size: 20px;
+      animation: floatUp linear forwards;
+      opacity: 0.95;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-110vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+
+    <div class="bubble" id="bubble">Tap me! 💬</div>
+
+    <div class="character-wrap">
+      <div class="character" id="character">🐰</div>
+      <div class="heart-hold">For you 💖</div>
+    </div>
+
+    <h1>Be my Valentine?</h1>
+    <p>
+      I made this just for you 💕<br>
+      My lil friend wants to ask something important… 👀
+    </p>
+
+    <div class="buttons">
+      <button class="yes" onclick="sayYes()">Yes 💖</button>
+      <button class="no" onclick="moveNo(this)">No 🙃</button>
+    </div>
+
+    <div class="message" id="message">YAY!! 💘 We did it!! 🥹💞</div>
+  </div>
+
+  <audio id="music" loop>
+    <source src="https://cdn.pixabay.com/audio/2022/02/23/audio_4b6b70f9b3.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const characters = ['🐰','🐱','🐻','🐶','🦊','🐼'];
+    const phrases = [
+      'Hi there! 🥰',
+      'You look cute today 👀💗',
+      'Tap me again! 👉',
+      'I have a question… 💘',
+      'Say yes pls 🥹'
+    ];
+
+    const charEl = document.getElementById('character');
+    const bubble = document.getElementById('bubble');
+    const music = document.getElementById('music');
+
+    let charIndex = 0;
+    let phraseIndex = 0;
+    let musicStarted = false;
+
+    charEl.addEventListener('click', () => {
+      charIndex = (charIndex + 1) % characters.length;
+      phraseIndex = (phraseIndex + 1) % phrases.length;
+      charEl.textContent = characters[charIndex];
+      bubble.textContent = phrases[phraseIndex];
+      for (let i = 0; i < 8; i++) createHeart();
+    });
+
+    function sayYes() {
+      document.getElementById('message').style.display = 'block';
+      if (!musicStarted) {
+        music.play();
+        musicStarted = true;
+      }
+      for (let i = 0; i < 40; i++) createHeart();
+    }
+
+    function moveNo(btn) {
+      const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+      const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+      btn.style.position = 'fixed';
+      btn.style.left = x + 'px';
+      btn.style.top = y + 'px';
+    }
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.textContent = ['💗','💖','💕','💘','💞'][Math.floor(Math.random()*5)];
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = 3 + Math.random() * 3 + 's';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 6000);
+    }
+  </script>
+</body>
+</html>
